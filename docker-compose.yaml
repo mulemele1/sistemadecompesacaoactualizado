@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+    # image project
+    app:
+        container_name: sys_app
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        command: 'php artisan serve --host=0.0.0.0'
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        ports:
+            - 8000:8000
+        depends_on:
+            - mysql
+        networks:
+            - laravel
+
+    # queue
+    queue:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        command: 'php artisan queue:work'
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - mysql
+        networks:
+            - laravel
+
+    # db mysql
+    mysql:
+        container_name: sys_mysql
+        platform: linux/x86_64
+        restart: unless-stopped
+        image: mysql:8.0.23
+        environment:
+            MYSQL_DATABASE: sistema_compensacoes
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - ./.docker/mysql/dbdata:/var/lib/mysql
+        ports:
+            - "3388:3306"
+        networks:
+            - laravel
+
+networks:
+    laravel:
+        driver: bridge
