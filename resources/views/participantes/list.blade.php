@@ -5,32 +5,24 @@
 @section('content')
 
 <style>
-    /* Estiliza o fundo da tabela */
     .table {
         background-color: #e3f2fd;
-        /* Cor de fundo azul claro */
         color: #333;
-        /* Cor de texto */
     }
 
     .table th {
         background-color: #90caf9;
-        /* Cor de fundo para o cabeçalho da tabela */
         color: #fff;
-        /* Cor do texto no cabeçalho */
         text-align: center;
     }
 
     .table td {
         background-color: #e3f2fd;
-        /* Cor de fundo para as células */
         color: #000;
-        /* Cor do texto das células */
         text-align: center;
         vertical-align: middle;
     }
 
-    /* Botões dentro da tabela */
     .table .btn {
         display: inline-flex;
         justify-content: center;
@@ -55,10 +47,8 @@
         color: white;
     }
 
-
     .btn-custom {
         width: 40px;
-        /* Ajustado para os ícones */
         height: 30px;
         justify-content: center;
         align-items: center;
@@ -77,53 +67,19 @@
         text-align: center;
     }
 
-    .btn-group {
-        display: inline-block;
-        justify-content: center;
-
-    }
-
-    .btn-custom {
-        width: 70px;
-        /* ajuste conforme necessário */
-        height: 30px;
-        margin-top: 6px;
-        /* ajuste a distância para baixo */
-        justify-content: center;
-        /* centraliza horizontalmente */
-        align-items: center;
-        /* centraliza verticalmente */
-        display: flex;
-        /* usa flexbox para alinhar os botões */
-        margin-right: 10px;
-        /* espaço entre os botões */
-    }
-
-    .button-container {
-        display: flex;
-        /* usa flexbox para alinhar os botões */
-        margin-top: 2px;
-        /* ajusta a distância para baixo */
-    }
-
     .table-responsive {
         overflow-x: auto;
-        /* permite rolagem horizontal */
     }
 
     @media (max-width: 768px) {
         .button-container {
             flex-direction: column;
-            /* Muda a direção dos botões em telas menores */
         }
 
         .btn-custom {
             width: 100%;
-            /* Botões ocupam toda a largura em telas menores */
             margin-right: 0;
-            /* Remove margem em telas menores */
             margin-bottom: 5px;
-            /* Adiciona espaço entre os botões */
         }
     }
 </style>
@@ -144,31 +100,13 @@
                             <div class="card-header">
                                 <h3 class="card-title">Lista de Participantes</h3>
                                 <div class="card-tools">
-                       
-                                    <!--<form action="{{ url('/import') }}" method="post" enctype="multipart/form-data">
-                                        @csrf
-                                        <input type="file" name="file" >
-                                        <button type="submit" class="btn btn-success">Import</button>
-                                    </form>-->
-                                    <form action="{{ route('participantes.import') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    <input type="file" name="file" required>
-    <button type="submit">Importar Participantes</button>
-</form>
-
-                                    <a href="{{ route('participantes.create') }}"
-                                        class="btn-sm bg-lightblue">Adicionar</a>
-                                    <!--<button class="btn btn-sm btn-primary btn-custom" id="loadButton">Carregar</button>
-                                    <button class="btn btn-sm btn-warning btn-custom" id="saveButton">Guardar</button>
-                                    <button class="btn btn-sm btn-success btn-custom">Excel</button>
-                                    <button class="btn btn-sm btn-secondary btn-custom">Copy</button>-->
+                                    <a href="{{ route('participantes.create') }}" class="btn-sm bg-lightblue">Adicionar</a>
                                 </div>
                             </div>
-                            <!-- /.card-header -->
+
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="example" class="table table-bordered table-striped">
-
                                         <thead>
                                             <tr>
                                                 <th>Código</th>
@@ -183,12 +121,10 @@
                                                     <td>{{ $participante->acronimo }}</td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a role="button" class="btn bg-lightblue"
-                                                                href="{{ route('participantes.edit', $participante->id) }}">
+                                                            <a role="button" class="btn bg-lightblue" href="{{ route('participantes.edit', $participante->id) }}">
                                                                 <i class="fas fa-pencil-alt"></i>
                                                             </a>
-                                                            <button type="button" class="btn bg-danger"
-                                                                onclick="confirmDelete({{ $participante->id }})">
+                                                            <button type="button" class="btn bg-danger" onclick="confirmDelete({{ $participante->id }})">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </div>
@@ -198,11 +134,8 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <!-- /.table-responsive -->
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </div>
                 </div>
             </div>
@@ -225,7 +158,6 @@
             cancelButtonText: "Cancelar"
         }).then((result) => {
             if (result.isConfirmed) {
-                // Enviar o formulário de exclusão
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '/participantes/' + id; // Altere para a rota correta
@@ -251,18 +183,8 @@
             }
         });
     }
-
-    function checkParticipants() {
-        if ($.isEmptyObject($participantes)) {
-            Swal.fire({
-                title: "Oops...",
-                text: "Nenhum registro encontrado",
-                icon: "info"
-            });
-        }
-    }
-
 </script>
 
 @include('layouts.datatable')
+
 @endsection
