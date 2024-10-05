@@ -190,4 +190,3 @@ Auth::routes();
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'list'])->name('home')->middleware('auth');
 Route::get('/home', [DashboardController::class, 'recuperar'])->name('recuperar')->middleware('auth');
-Route::get('/type-home', [DashboardController::class, 'typeHome'])->name('typeHome')->middleware('is_type');
