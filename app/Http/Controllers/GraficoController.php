@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Administracao;
+use App\Models\Distribuicao;
 use App\Models\Participante;
 use App\Models\Projecto;
 use App\Models\Recepcao;
@@ -17,124 +18,107 @@ class GraficoController extends Controller
     public function projectoAnos(Request $request)
     {
         $val = false;
-        $projectos = Projecto::all(['id', 'acronimo']);
-        if ($request->data) {
-            $year = $request->data;
-            $year2 = $request->data2;
-            $interval = null;
-            $sum = 0;
-            $sum2 = 0;
-            $sum3 = 0;
-            if ($year2 > $year) {
-                while ($year2 > $year) {
-                    $interval[] = $year + 1;
-                    $year = $year + 1;
-                }
-                foreach ($interval as $i => $y) {
-                    foreach ($projectos as $project) {
-                        $tEntradas = DB::table('desembolsos')->where('projecto_id', $project->id)
-                            ->whereYear('created_at', '=', $year)->sum('valor');
-                        $tSaidas = DB::table('dispensas')->where('projecto_id', $project->id)
-                            ->whereYear('created_at', '=', $year)->sum('valor');
-                        $saldo = $tEntradas - $tSaidas;
-                        $sum = $saldo + $sum;
-                        $sum2 = $tEntradas + $sum2;
-                        $sum3 = $tSaidas + $sum3;
-                        $tabela[] = [$y, $project->acronimo, $saldo, $tSaidas, $tEntradas];
-                    }
-                }
-                return view('relatorios/projecto/anos', compact('projectos', 'tabela', 'val', 'sum', 'sum2', 'sum3'));
-            } else {
-                $val = true;
-                return view('relatorios/projecto/anos', compact('projectos', 'val'));
-            }
-        } else {
-            return view('relatorios/projecto/anos', compact('projectos', 'val'));
-        }
-    }
-    public function projectoAno(Request $request)
-    {
-        /*$val = false;
-        $projectos = Projecto::all(['id', 'acronimo']);
-        $data = $request->data; $data2 = $request->data2; $project_id = $request->projecto_id;
-        if ($data && $data2 && $project_id != null) {
-            if ($data < $data2) {
-                $year = $data;
-                $sum = 0;
-                $sum2 = 0;
-                $sum3 = 0;
-                $months = [
-                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto',
-                    'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-                ];
-                foreach ($months as $i => $m) {
-                    $tEntradas = DB::table('desembolsos')
-                        ->where('projecto_id', $project_id)
-                        ->whereYear('created_at', '=', $year)
-                        ->whereMonth('created_at', '=', $i + 1)
-                        ->sum('valor');
-                    $tSaidas = DB::table('dispensas')
-                        ->where('projecto_id', $project_id)
-                        ->whereYear('created_at', '=', $year)
-                        ->whereMonth('created_at', '=', $i + 1)
-                        ->sum('valor');
-                    $saldo = $tEntradas - $tSaidas;
-                    $sum = $saldo + $sum;
-                    $sum2 = $tEntradas + $sum2;
-                    $sum3 = $tSaidas + $sum3;
-                    $tabela[] = [$i + 1, $m, $projectos->find($project_id)->acronimo, $saldo, $tSaidas, $tEntradas];
-                }
-                $projecto = Projecto::find($project_id);
-                return view('relatorios/projecto/ano', compact('projectos', 'months', 'tabela', 'sum', 'sum2', 'sum3', 'val', 'data', 'data2', 'projecto'));
-            } else {
-                $val = true;
-                return view('relatorios/projecto/ano', compact('projectos', 'val'));
-            }
-        } else {
-            return view('relatorios/projecto/ano', compact('projectos', 'val', 'data', 'data2'));
-        }*/
-        $val = false;
-        $projectos = Projecto::all(['id', 'acronimo']);
         $data = $request->data;
         $data2 = $request->data2;
-        $project_id = $request->projecto_id;
-
-        if ($data && $data2 && $project_id != null) {
+        $recepcao_id = $request->recepcao_id;
+    
+        // Carregar todas as recepções para o dropdown
+        $recepcaos = Recepcao::all(['id', 'name']);
+        
+        if ($data && $data2 && $recepcao_id != null) {
             if ($data < $data2) {
                 $startDate = Carbon::createFromFormat('Y-m-d', $data);
                 $endDate = Carbon::createFromFormat('Y-m-d', $data2);
-
-                $sum = 0;
-                $sum2 = 0;
-                $sum3 = 0;
+    
                 $tabela = [];
-
-                while ($startDate <= $endDate) {
-                    $tEntradas = DB::table('desembolsos')
-                        ->where('projecto_id', $project_id)
-                        ->whereDate('created_at', $startDate)
-                        ->sum('valor');
-                    $tSaidas = DB::table('dispensas')
-                        ->where('projecto_id', $project_id)
-                        ->whereDate('created_at', $startDate)
-                        ->sum('valor');
-                    $saldo = $tEntradas - $tSaidas;
-                    $sum += $saldo;
-                    $sum2 += $tEntradas;
-                    $sum3 += $tSaidas;
-                    $tabela[] = [$startDate->format('d/m/Y'), $saldo, $tSaidas, $tEntradas];
-                    $startDate->addDay();
+                $totalDesembolsado = 0;
+    
+                // Buscar desembolsos para o intervalo de datas e recepcao_id específico
+                $distribuicaos = DB::table('distribuicaos')
+                    ->where('recepcao_id', $recepcao_id)
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->select('valor', 'created_at as data', 'recepcao_id')
+                    ->orderBy('created_at')
+                    ->get();
+    
+                foreach ($distribuicaos as $desembolso) {
+                    $name = $recepcaos->find($recepcao_id)->name;
+                    $valorDesembolsado = $desembolso->valor;
+                    $totalDesembolsado += $valorDesembolsado;
+    
+                    $tabela[] = [
+                        $name,  // Nome da recepção
+                        $desembolso->data,                    // Data
+                        $valorDesembolsado                    // Valor Desembolsado
+                    ];
                 }
-                $projecto = Projecto::find($project_id);
-                return view('relatorios/projecto/ano', compact('projectos', 'tabela', 'sum', 'sum2', 'sum3', 'val', 'data', 'data2', 'projecto'));
+    
+                return view('relatorios/projecto/anos', compact('recepcaos', 'tabela', 'val', 'data', 'data2', 'recepcao_id', 'totalDesembolsado'));
             } else {
                 $val = true;
-                return view('relatorios/projecto/ano', compact('projectos', 'val'));
+                return view('relatorios/projecto/anos', compact('recepcaos', 'val'));
             }
         } else {
-            return view('relatorios/projecto/ano', compact('projectos', 'val', 'data', 'data2'));
+            return view('relatorios/projecto/anos', compact('recepcaos', 'val', 'data', 'data2'));
         }
     }
+    
+
+
+    
+public function projectoAno(Request $request)
+{
+    $val = false;
+    $projectos = Projecto::all(['id', 'acronimo']);
+    $data = $request->data;
+    $data2 = $request->data2;
+    $project_id = $request->projecto_id;
+
+    if ($data && $data2 && $project_id != null) {
+        if ($data < $data2) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $data);
+            $endDate = Carbon::createFromFormat('Y-m-d', $data2);
+
+            $tabela = [];
+            $totalDesembolsado = 0; // Inicializa o acumulador para o total
+
+            // Buscando os desembolsos para o intervalo de datas
+            $desembolsoinsfontes = DB::table('desembolsoinsfontes')
+                ->where('projecto_id', $project_id)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->select('valor', 'data') // Corrigido para 'created_at'
+                ->orderBy('data') // Ordena pelos desembolsos pela data
+                ->get();
+
+            // Preenchendo a tabela com os dados necessários
+            foreach ($desembolsoinsfontes as $desembolso) {
+                $acronimo = $projectos->find($project_id)->acronimo;
+                $valorDesembolsado = $desembolso->valor;
+                $totalDesembolsado += $valorDesembolsado; // Acumula o valor desembolsado
+
+                $tabela[] = [
+                    $acronimo,                              // Acrônimo
+                    $desembolso->data, // Data formatada
+                    $valorDesembolsado                      // Valor Desembolsado
+                ];
+            }
+
+            $projecto = Projecto::find($project_id);
+
+            // Passar o total para a view
+            return view('relatorios/projecto/ano', compact('projectos', 'tabela', 'val', 'data', 'data2', 'projecto', 'totalDesembolsado'));
+        } else {
+            $val = true;
+            return view('relatorios/projecto/ano', compact('projectos', 'val'));
+        }
+    } else {
+        return view('relatorios/projecto/ano', compact('projectos', 'val', 'data', 'data2'));
+    }
+}
+
+
+
+    
     public function administracaoAnos(Request $request)
     {
         $val = false;
@@ -458,6 +442,90 @@ class GraficoController extends Controller
             }
         } else {
             return view('relatorios/participante/anoV', compact('participantes', 'val', 'data', 'data2'));
+        }
+    }
+
+    public function fonteAno(Request $request)
+    {
+        /*$val = false;
+        $projectos = Projecto::all(['id', 'acronimo']);
+        $data = $request->data; $data2 = $request->data2; $project_id = $request->projecto_id;
+        if ($data && $data2 && $project_id != null) {
+            if ($data < $data2) {
+                $year = $data;
+                $sum = 0;
+                $sum2 = 0;
+                $sum3 = 0;
+                $months = [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto',
+                    'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ];
+                foreach ($months as $i => $m) {
+                    $tEntradas = DB::table('desembolsos')
+                        ->where('projecto_id', $project_id)
+                        ->whereYear('created_at', '=', $year)
+                        ->whereMonth('created_at', '=', $i + 1)
+                        ->sum('valor');
+                    $tSaidas = DB::table('dispensas')
+                        ->where('projecto_id', $project_id)
+                        ->whereYear('created_at', '=', $year)
+                        ->whereMonth('created_at', '=', $i + 1)
+                        ->sum('valor');
+                    $saldo = $tEntradas - $tSaidas;
+                    $sum = $saldo + $sum;
+                    $sum2 = $tEntradas + $sum2;
+                    $sum3 = $tSaidas + $sum3;
+                    $tabela[] = [$i + 1, $m, $projectos->find($project_id)->acronimo, $saldo, $tSaidas, $tEntradas];
+                }
+                $projecto = Projecto::find($project_id);
+                return view('relatorios/projecto/ano', compact('projectos', 'months', 'tabela', 'sum', 'sum2', 'sum3', 'val', 'data', 'data2', 'projecto'));
+            } else {
+                $val = true;
+                return view('relatorios/projecto/ano', compact('projectos', 'val'));
+            }
+        } else {
+            return view('relatorios/projecto/ano', compact('projectos', 'val', 'data', 'data2'));
+        }*/
+        $val = false;
+        $projectos = Projecto::all(['id', 'acronimo']);
+        $data = $request->data;
+        $data2 = $request->data2;
+        $project_id = $request->projecto_id;
+
+        if ($data && $data2 && $project_id != null) {
+            if ($data < $data2) {
+                $startDate = Carbon::createFromFormat('Y-m-d', $data);
+                $endDate = Carbon::createFromFormat('Y-m-d', $data2);
+
+                $sum = 0;
+                $sum2 = 0;
+                $sum3 = 0;
+                $tabela = [];
+
+                while ($startDate <= $endDate) {
+                    $tEntradas = DB::table('desembolsos')
+                        ->where('projecto_id', $project_id)
+                        ->whereDate('created_at', $startDate)
+                        ->sum('valor');
+                    $tSaidas = DB::table('dispensas')
+                        ->where('projecto_id', $project_id)
+                        ->whereDate('created_at', $startDate)
+                        ->sum('valor');
+                    $saldo = $tEntradas - $tSaidas;
+                    $sum += $saldo;
+                    $sum2 += $tEntradas;
+                    $sum3 += $tSaidas;
+                    $tabela[] = [$startDate->format('d/m/Y'), $saldo, $tSaidas, $tEntradas];
+                    $startDate->addDay();
+                }
+                $projecto = Projecto::find($project_id);
+                return view('relatorios/projecto/ano', compact('projectos', 'tabela', 'sum', 'sum2', 'sum3', 'val', 'data', 'data2', 'projecto'));
+            } else {
+                $val = true;
+                return view('relatorios/projecto/ano', compact('projectos', 'val'));
+            }
+        } else {
+            return view('relatorios/projecto/ano', compact('projectos', 'val', 'data', 'data2'));
         }
     }
 }

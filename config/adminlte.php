@@ -350,12 +350,14 @@ return [
                     'icon' => 'fas fa-fw fa-window-restore',
                     'submenu' => [
                         [
-                            'text' => 'Anual',
+                            //'text' => 'Por Local', // TINHA => ANUAL
+                            'text' => 'Por Projecto',
                             'url'  => 'relatorios/projecto/ano',
                             'icon' => 'fas fa-fw fa-calendar',
                         ],
                         [
-                            'text' => 'Todos Projectos',
+                            //'text' => 'Por Projecto', // TINHA => TODOS PROJECTOS
+                            'text' => 'Por Local',
                             'url'  => 'relatorios/projecto/anos',
                             'icon' => 'fas fa-fw fa-calendar',
                         ],
@@ -389,6 +391,17 @@ return [
                         [
                             'text' => 'Todos os locais',
                             'url'  => 'relatorios/recepcao/anos',
+                            'icon' => 'fas fa-fw fa-calendar',
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'Fonte',
+                    'icon' => 'fas fa-fw fa-user',
+                    'submenu' => [
+                        [
+                            'text' => 'Anual',
+                            'url'  => 'relatorios/fonte/ano',
                             'icon' => 'fas fa-fw fa-calendar',
                         ],
                     ],

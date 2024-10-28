@@ -67,9 +67,9 @@
                                         <thead>
                                             <tr>
                                                 <th>Data</th>
-                                                <th>Saldo</th>
-                                                <th>Requisitado</th>
                                                 <th>Desembolsado</th>
+                                                <th>Requisitado</th>
+                                                <th>Saldo</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -77,9 +77,9 @@
                                                 @foreach ($tabela as $table)
                                                     <tr>
                                                         <td>{{ $table[0] }}</td>
-                                                        <td>{{ number_format($table[1], 2) }}</td>
-                                                        <td>{{ number_format($table[2], 2) }}</td>
                                                         <td>{{ number_format($table[3], 2) }}</td>
+                                                        <td>{{ number_format($table[2], 2) }}</td>
+                                                        <td>{{ number_format($table[1], 2) }}</td>
                                                     </tr>
                                                 @endforeach
                                             @endisset

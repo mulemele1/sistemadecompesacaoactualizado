@@ -51,9 +51,9 @@
                                             <tr>
                                                 <th>Ano</th>
                                                 <th>Nome</th>
-                                                <th>Saldo</th>
-                                                <th>Gasto</th>
                                                 <th>Desembolsado</th>
+                                                <th>Gasto</th>
+                                                <th>Saldo</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -62,9 +62,9 @@
                                                     <tr>
                                                         <td>{{ $table[0] }}</td>
                                                         <td>{{ $table[1] }}</td>
-                                                        <td>{{ $table[2] }}</td>
-                                                        <td>{{ $table[3] }}</td>
                                                         <td>{{ $table[4] }}</td>
+                                                        <td>{{ $table[3] }}</td>
+                                                        <td>{{ $table[2] }}</td>
                                                     </tr>
                                                 @endforeach
                                             @endisset
