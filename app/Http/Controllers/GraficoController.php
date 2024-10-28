@@ -47,7 +47,7 @@ class GraficoController extends Controller
                     $totalDesembolsado += $valorDesembolsado;
     
                     $tabela[] = [
-                        $name,  // Nome da recepção
+                        $name,                                // Nome da recepção
                         $desembolso->data,                    // Data
                         $valorDesembolsado                    // Valor Desembolsado
                     ];
