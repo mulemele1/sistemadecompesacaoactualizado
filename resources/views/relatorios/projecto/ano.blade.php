@@ -77,8 +77,8 @@
                                     <thead>
                                         <tr>
                                             <th>Acrônimo</th>
-                                            <th>Data Desembolsado</th>
-                                            <th>Valor Desembolsado</th>
+                                            <th>Data Desembolso</th>
+                                            <th>Valor Desembolso</th>
                                         </tr>
                                     </thead>
                                     <tbody>

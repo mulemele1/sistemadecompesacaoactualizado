@@ -61,9 +61,10 @@
                                 <table id="example" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Acrônimo</th>
-                                            <th>Data Desembolsado</th>
-                                            <th>Valor Desembolsado</th>
+                                            <th>Recepção</th>
+                                            <th>Projecto</th>
+                                            <th>Data Desembolso</th>
+                                            <th>Valor Desembolso</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -72,11 +73,13 @@
                                                 <tr>
                                                     <td>{{ $table[0] }}</td>
                                                     <td>{{ $table[1] }}</td>
-                                                    <td>{{ number_format($table[2], 2, ',', '.') }}</td>
+                                                    <td>{{ $table[2] }}</td>
+                                                    <td>{{ number_format($table[3], 2, ',', '.') }}</td>
                                                 </tr>
                                             @endforeach
                                             <tr style="font-weight: bold; background-color: #f2f2f2;">
                                                 <td>Total</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td>{{ number_format($totalDesembolsado, 2, ',', '.') }}</td>
                                             </tr>

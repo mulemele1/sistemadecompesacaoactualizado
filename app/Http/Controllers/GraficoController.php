@@ -24,7 +24,8 @@ class GraficoController extends Controller
     
         // Carregar todas as recepções para o dropdown
         $recepcaos = Recepcao::all(['id', 'name']);
-        
+        $projectos = Projecto::all(['id', 'acronimo']); // Adicionando todos os projectos
+    
         if ($data && $data2 && $recepcao_id != null) {
             if ($data < $data2) {
                 $startDate = Carbon::createFromFormat('Y-m-d', $data);
@@ -37,19 +38,21 @@ class GraficoController extends Controller
                 $distribuicaos = DB::table('distribuicaos')
                     ->where('recepcao_id', $recepcao_id)
                     ->whereBetween('created_at', [$startDate, $endDate])
-                    ->select('valor', 'created_at as data', 'recepcao_id')
+                    ->select('valor', 'created_at as data', 'recepcao_id', 'projecto_id') // Incluindo o projeto
                     ->orderBy('created_at')
                     ->get();
     
                 foreach ($distribuicaos as $desembolso) {
                     $name = $recepcaos->find($recepcao_id)->name;
+                    $acronimo = $projectos->find($desembolso->projecto_id)->acronimo; // Recuperando o projeto
                     $valorDesembolsado = $desembolso->valor;
                     $totalDesembolsado += $valorDesembolsado;
     
                     $tabela[] = [
-                        $name,                                // Nome da recepção
-                        $desembolso->data,                    // Data
-                        $valorDesembolsado                    // Valor Desembolsado
+                        $name,                     // Nome da recepção
+                        $acronimo,                // Nome do projecto
+                        $desembolso->data,        // Data
+                        $valorDesembolsado        // Valor Desembolsado
                     ];
                 }
     
