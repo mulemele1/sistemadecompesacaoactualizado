@@ -45,7 +45,8 @@ Route::get('/relatorios/recepcao/anos', [GraficoController::class, 'recepcaoAnos
 Route::get('/relatorios/recepcao/ano', [GraficoController::class, 'recepcaoAno'])->name('relatorios.recepcao.ano');
 Route::get('/relatorios/participanteDN/anoN', [GraficoController::class, 'participanteAnoDN'])->name('relatorios.participanteDN.anoN');
 Route::get('/relatorios/participanteDV/anoV', [GraficoController::class, 'participanteAnoDV'])->name('relatorios.participanteDV.anoV');
-Route::get('/relatorios/fonte/ano', [GraficoController::class, 'projectoAno'])->name('relatorios.fonte.ano');
+Route::get('/relatorios/fontedaf/ano', [GraficoController::class, 'fontedafAno'])->name('relatorios.fontedaf.ano');
+Route::get('/relatorios/fontedaf/anos', [GraficoController::class, 'fontedafAnos'])->name('relatorios.fontedaf.anos');
 
 //Cadastros
 Route::delete('/projectos/{id}', [ProjectoController::class, 'delete'])->name('projectos.delete');

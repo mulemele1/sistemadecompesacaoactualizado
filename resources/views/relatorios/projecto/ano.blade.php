@@ -7,56 +7,63 @@
     <div class="col-12 mt-3">
         <div class="card">
             <div class="card-body">
-                <form action=" {{ route('relatorios.projecto.ano') }} " method="get">
-                    <section class="content">
+                
+                <!-- Título do Relatório -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h5>RELATÓRIO DOS PROJECTOS</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulário de Pesquisa -->
+                <form action="{{ route('relatorios.projecto.ano') }}" method="get">
+                <section class="content">
                         <div class="container-fluid">
+                            
                             @if ($val)
-                                <div class="errors alert alert-danger alert-dismissible text-center">
-                                    <button type="button" class="close" data-dismiss="alert"
-                                        aria-hidden="true">&times;</button>
-                                    <h5><i class="icon fas fa-ban error"></i>Erro de Intervalo</h5>
+                                <div class="alert alert-danger alert-dismissible text-center">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h5><i class="icon fas fa-ban"></i> Erro de Intervalo</h5>
                                 </div>
                             @endif
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <label for="number" class="form-control">Data Inicial</label>
-                                        <input type="date" min="2020" max="2030" class="form-control"
-                                            value="{{ old('data') ?? $data }}" name="data" placeholder="Ano">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <label for="number" class="form-control">Data Final</label>
-                                        <input type="date" min="2020" max="2030" class="form-control"
-                                            value="{{ old('data2') ?? $data2 }}" name="data2" placeholder="Ano">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <form action="simple-results.html">
-                                        <div class="input-group">
-                                            <label for="projecto" class="form-control">Projecto</label>
-                                            <select class="form-control" name="projecto_id">
-                                                @if (isset($projecto))
-                                                    <option value="{{ $projecto->id }}" selected>
-                                                        {{ $projecto->acronimo }}
-                                                    </option>
-                                                    @foreach ($projectos as $projecto)
-                                                        <option value="{{ $projecto->id }}"> {{ $projecto->acronimo }}
-                                                        </option>
-                                                    @endforeach
-                                                @else
-                                                    <option value=""></option>
-                                                    @foreach ($projectos as $projecto)
-                                                        <option value="{{ $projecto->id }}"> {{ $projecto->acronimo }}
-                                                        </option>
-                                                    @endforeach
-                                                @endif
-                                            </select>
 
-                                        </div>
-                                    </form>
+                            <div class="row">
+                                <!-- Campo Data Inicial -->
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <label for="data" class="form-control">Data Inicial</label>
+                                        <input type="date" min="2020-01-01" max="2030-12-31" class="form-control" 
+                                               value="{{ old('data') ?? $data }}" name="data" required>
+                                    </div>
                                 </div>
+
+                                <!-- Campo Data Final -->
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <label for="data2" class="form-control">Data Final</label>
+                                        <input type="date" min="2020-01-01" max="2030-12-31" class="form-control" 
+                                               value="{{ old('data2') ?? $data2 }}" name="data2" required>
+                                    </div>
+                                </div>
+
+                                <!-- Campo Projeto -->
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <label for="projecto_id" class="form-control">Projecto</label>
+                                        <select class="form-control" name="projecto_id" required>
+                                            <option value="" selected disabled>Selecione projecto</option>
+                                            @foreach ($projectos as $projecto)
+                                                <option value="{{ $projecto->id }}" 
+                                                        {{ isset($selectedProjecto) && $selectedProjecto == $projecto->id ? 'selected' : '' }}>
+                                                    {{ $projecto->acronimo }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <!-- Botão de Pesquisa -->
                                 <div class="col-md-2 d-flex align-items-end">
                                     <button type="submit" class="btn bg-lightblue btn-block">
@@ -67,50 +74,60 @@
                         </div>
                     </section>
                 </form>
+
+                <!-- Tabela de Resultados -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card mt-3">
-
-                            <!-- /.card-header -->
                             <div class="card-body">
                                 <table id="example" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Acrônimo</th>
-                                            <th>Data Desembolso</th>
-                                            <th>Valor Desembolso</th>
+                                            <th>Projecto</th>
+                                            <th>Ano</th>
+                                            <th>Valor Desembolsado</th>
+                                            <th>Gasto</th>
+                                            <th>Saldo</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @isset($tabela)
+                                        @if(!empty($tabela))
                                             @foreach ($tabela as $table)
                                                 <tr>
-                                                    <td>{{ $table[0] }}</td> <!-- Acrônimo -->
-                                                    <td>{{ $table[1] }}</td> <!-- Data -->
-                                                    <td>{{ number_format($table[2], 2, ',', '.') }}</td>
-                                                    <!-- Valor Desembolsado -->
+                                                    <td>{{ $table['acronimo'] }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($table['data'])->format('Y') }}</td>
+                                                    <td>{{ number_format($table['desembolso'], 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($table['gasto'], 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($table['saldo'], 2, ',', '.') }}</td>
                                                 </tr>
                                             @endforeach
-
-                                            <!-- Exibição do total desembolsado -->
-                                            <tr style="font-weight: bold; background-color: #f2f2f2;">
-                                                <td>Total</td>
-                                                <td></td> <!-- Célula vazia para a Data -->
-                                                <td>{{ number_format($totalDesembolsado, 2, ',', '.') }}</td>
-                                                <!-- Total do valor desembolsado -->
-                                            </tr>
-                                        @endisset
+                                        @else
+                                            <!-- Caso a tabela esteja vazia, nada será mostrado aqui -->
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </div>
                 </div>
+
+                <!-- Resumo dos Valores -->
+                <!--
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h5>Total Desembolsado: {{ number_format($totalDesembolsado, 2, ',', '.') }}</h5>
+                            <h5>Total Gasto: {{ number_format($totalGastos, 2, ',', '.') }}</h5>
+                            <h5>Saldo: {{ number_format($saldo, 2, ',', '.') }}</h5>
+                        </div>
+                    </div>
+                </div>
+                -->
+
             </div>
         </div>
     </div>
 </div>
+
 @include('layouts.datatable')
 @endsection

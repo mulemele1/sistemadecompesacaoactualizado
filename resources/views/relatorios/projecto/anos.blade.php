@@ -7,85 +7,79 @@
     <div class="col-12 mt-3">
         <div class="card">
             <div class="card-body">
+                
+                <!-- Título do Relatório -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h5>RELATÓRIO DOS PROJECTOS POR LOCAL</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulário de Pesquisa -->
                 <form action="{{ route('relatorios.projecto.anos') }}" method="get">
-                    <section class="content">
-                        <div class="container-fluid">
-                            @if ($val)
-                                <div class="alert alert-danger alert-dismissible text-center">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                    <h5><i class="icon fas fa-ban"></i> Erro de Intervalo</h5>
-                                </div>
-                            @endif
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <label for="number" class="form-control">Data Inicial</label>
-                                        <input type="date" min="2020" max="2030" class="form-control"
-                                            value="{{ old('data') ?? $data }}" name="data" placeholder="Ano">
+                <section class="content">
+                            <div class="container-fluid">
+                                @if ($val)
+                                    <div class="errors alert alert-danger alert-dismissible text-center">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                        <h5><i class="icon fas fa-ban error"></i>Erro de Intervalo</h5>
                                     </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <label for="number" class="form-control">Data Final</label>
-                                        <input type="date" min="2020" max="2030" class="form-control"
-                                            value="{{ old('data2') ?? $data2 }}" name="data2" placeholder="Ano">
+                                @endif
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="input-group">
+                                            <label for="number" class="form-control">Ano inicial</label>
+                                            <input type="number" min="2022" max="2030" class="form-control"
+                                                value="{{ old('data') }}" name="data" placeholder="Ano Inicial">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="input-group">
-                                        <label for="distribuicao" class="form-control">Recepção</label>
-                                        <select class="form-control" name="recepcao_id">
-                                            <option value=""></option>
-                                            @foreach ($recepcaos as $recepcao)
-                                                <option value="{{ $recepcao->id }}" 
-                                                    {{ isset($recepcao_id) && $recepcao_id == $recepcao->id ? 'selected' : '' }}>
-                                                    {{ $recepcao->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                    <div class="col-md-3">
+                                        <div class="input-group">
+                                            <label for="number" class="form-control">Ano final</label>
+                                            <input type="number" min="2022" max="2030" class="form-control"
+                                                value="{{ old('data2') }}" name="data2" placeholder="Ano final">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn bg-lightblue">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-2 d-flex align-items-end">
-                                    <button type="submit" class="btn bg-lightblue btn-block">
-                                        <i class="fa fa-search"></i> Pesquisar
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-                    </section>
-                </form>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card mt-3">
-                            <div class="card-body">
-                                <table id="example" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Recepção</th>
-                                            <th>Projecto</th>
-                                            <th>Data Desembolso</th>
-                                            <th>Valor Desembolso</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @isset($tabela)
-                                            @foreach ($tabela as $table)
-                                                <tr>
-                                                    <td>{{ $table[0] }}</td>
-                                                    <td>{{ $table[1] }}</td>
-                                                    <td>{{ $table[2] }}</td>
-                                                    <td>{{ number_format($table[3], 2, ',', '.') }}</td>
-                                                </tr>
-                                            @endforeach
-                                            <tr style="font-weight: bold; background-color: #f2f2f2;">
-                                                <td>Total</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td>{{ number_format($totalDesembolsado, 2, ',', '.') }}</td>
+                        </section>
+                    </form>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <table id="example" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Ano</th>
+                                                <th>Nome</th>
+                                                <th>Desembolsado</th>
+                                                <th>Gasto</th>
+                                                <th>Saldo</th>
                                             </tr>
-                                        @endisset
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @isset($tabela)
+                                                @foreach ($tabela as $table)
+                                                    <tr>
+                                                        <td>{{ $table[0] }}</td> <!-- Ano -->
+                                                        <td>{{ $table[1] }}</td> <!-- Nome -->
+                                                        <td>{{ $table[4] }}</td> <!-- Desembolsado -->
+                                                        <td>{{ $table[3] }}</td> <!-- Gasto -->
+                                                        <td>{{ $table[2] }}</td> <!-- Saldo -->
+                                                    </tr>
+                                                @endforeach
+                                            @endisset
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -93,6 +87,5 @@
             </div>
         </div>
     </div>
-</div>
-@include('layouts.datatable')
+    @include('layouts.datatable')
 @endsection

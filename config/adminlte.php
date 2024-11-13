@@ -364,16 +364,34 @@ return [
                     ],
                 ],
                 [
+                    'text' => 'DAF',
+                    'icon' => 'fas fa-fw fa-user',
+                    'submenu' => [
+                        [
+                            'text' => 'Por Projecto',
+                            'url'  => 'relatorios/fontedaf/ano',
+                            'icon' => 'fas fa-fw fa-calendar',
+                        ],
+                        
+                        [
+                            'text' => 'Por Local',
+                            'url'  => 'relatorios/fontedaf/anos',
+                            'icon' => 'fas fa-fw fa-calendar',
+                        ],
+                    ],
+                ],
+
+                [
                     'text' => 'Secretária',
                     'icon' => 'fas fa-fw fa-user',
                     'submenu' => [
                         [
-                            'text' => 'Anual',
+                            'text' => 'Por Projectos',
                             'url'  => 'relatorios/administracao/ano',
                             'icon' => 'fas fa-fw fa-calendar',
                         ],
                         [
-                            'text' => 'Todos os locais',
+                            'text' => 'Todos os Projecto',
                             'url'  => 'relatorios/administracao/anos',
                             'icon' => 'fas fa-fw fa-calendar',
                         ],
@@ -383,43 +401,34 @@ return [
                     'text' => 'Recepção',
                     'icon' => 'fas fa-fw fa-user',
                     'submenu' => [
+                        
                         [
-                            'text' => 'Anual',
-                            'url'  => 'relatorios/recepcao/ano',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
-                        [
-                            'text' => 'Todos os locais',
+                            'text' => 'Por Projecto',
                             'url'  => 'relatorios/recepcao/anos',
                             'icon' => 'fas fa-fw fa-calendar',
                         ],
-                    ],
-                ],
-                [
-                    'text' => 'Fonte',
-                    'icon' => 'fas fa-fw fa-user',
-                    'submenu' => [
                         [
-                            'text' => 'Anual',
-                            'url'  => 'relatorios/fonte/ano',
+                            'text' => 'Por Local',
+                            'url'  => 'relatorios/recepcao/ano',
                             'icon' => 'fas fa-fw fa-calendar',
                         ],
                     ],
                 ],
+                
                 [
                     'text' => 'Participante',
                     'icon' => 'fas fa-fw fa-calendar',
                     'submenu' => [
                         [
-                            'text' => 'Des. Normais Anuais',
+                            'text' => 'Por Projecto',
                             'url'  => 'relatorios/participanteDN/anoN',
                             'icon' => 'fas fa-fw fa-calendar',
                         ],
-                        [
-                            'text' => 'Des. Variaveis Anuais',
-                            'url'  => 'relatorios/participanteDV/anoV',
-                            'icon' => 'fas fa-fw fa-calendar',
-                        ],
+                        //[
+                        //   'text' => 'Por Local',
+                        //    'url'  => 'relatorios/participanteDV/anoV',
+                        //    'icon' => 'fas fa-fw fa-calendar',
+                        //],
                     ],
                 ],
             ],

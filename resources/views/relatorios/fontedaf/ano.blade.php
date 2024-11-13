@@ -1,24 +1,27 @@
-@extends('adminlte::page')
+@extends('adminlte::page') 
 
-@section('title', 'Recepção por Anos')
+@section('title', 'Relatorio da DAF por Ano')
 
 @section('content')
 <div class="row">
     <div class="col-12 mt-3">
         <div class="card">
             <div class="card-body">
-
+                
+                <!-- Título do Relatório -->
                 <div class="row mt-4">
                     <div class="col-12">
                         <div class="alert alert-info text-center">
-                            <h5>RELATÓRIO DA RECEPÇÃO POR PROJECTO</h5>
+                            <h5>RELATÓRIO DA DAF POR PROJECTO</h5>
                         </div>
                     </div>
                 </div>
 
-                <form action="{{ route('relatorios.recepcao.anos') }}" method="get">
+                <!-- Formulário de Pesquisa -->
+                <form action="{{ route('relatorios.fontedaf.ano') }}" method="get">
                     <section class="content">
                         <div class="container-fluid">
+                            
                             @if ($val)
                                 <div class="alert alert-danger alert-dismissible text-center">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -72,6 +75,7 @@
                     </section>
                 </form>
 
+                <!-- Tabela de Resultados -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card mt-3">
@@ -80,7 +84,7 @@
                                     <thead>
                                         <tr>
                                             <th>Projecto</th>
-                                            <th>Ano</th>
+                                            <th>Ano do Desembolso</th>
                                             <th>Valor Desembolsado</th>
                                             <th>Gasto</th>
                                             <th>Saldo</th>
@@ -91,14 +95,14 @@
                                             @foreach ($tabela as $table)
                                                 <tr>
                                                     <td>{{ $table['acronimo'] }}</td>
-                                                    <td>{{ $table['data'] }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($table['data'])->format('Y') }}</td>
                                                     <td>{{ number_format($table['desembolso'], 2, ',', '.') }}</td>
                                                     <td>{{ number_format($table['gasto'], 2, ',', '.') }}</td>
                                                     <td>{{ number_format($table['saldo'], 2, ',', '.') }}</td>
                                                 </tr>
                                             @endforeach
                                         @else
-                                            
+                                            <!-- Caso a tabela esteja vazia, nada será mostrado aqui -->
                                         @endif
                                     </tbody>
                                 </table>
@@ -106,6 +110,19 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Resumo dos Valores -->
+                <!--
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h5>Total Desembolsado: {{ number_format($totalDesembolsado, 2, ',', '.') }}</h5>
+                            <h5>Total Gasto: {{ number_format($totalGastos, 2, ',', '.') }}</h5>
+                            <h5>Saldo: {{ number_format($saldo, 2, ',', '.') }}</h5>
+                        </div>
+                    </div>
+                </div>
+                -->
 
             </div>
         </div>

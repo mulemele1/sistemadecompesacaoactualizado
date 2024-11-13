@@ -7,73 +7,131 @@
         <div class="col-12 mt-3">
             <div class="card">
                 <div class="card-body">
-                    <form action=" {{ route('relatorios.participanteDN.anoN') }} " method="get">
-                        <section class="content">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="input-group">
-                                            <label for="number" class="form-control">Data Inicial</label>
-                                            <input type="date" min="2020" max="2030" class="form-control"
-                                                value="{{ old('data') ?? $data }}" name="data" placeholder="Ano">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <label for="number" class="form-control">Data Final</label>
-                                            <input type="date" min="2020" max="2030" class="form-control"
-                                                value="{{ old('data2') ?? $data2 }}" name="data2" placeholder="Ano">
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn bg-lightblue">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    </form>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card mt-3">
-                                <!-- /.card-header -->
-                                <div class="card-body">
-                                    <table id="example" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Data</th>
-                                                <th>Valor Gasto</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @isset($tabela)
-                                                @foreach ($tabela as $table)
-                                                    <tr>
-                                                        <td>{{ $table[0] }}</td>
-                                                        <td>{{ number_format($table[1], 2) }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            @endisset
-                                        </tbody>
-                                        <tfoot>
-                                            @isset($sum)
-                                                <tr>
-                                                    <td>Total:</td>
-                                                    <td>{{ number_format($sum, 2) }}</td>
-                                                </tr>
-                                            @endisset
-                                        </tfoot>
-                                    </table>
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                            <!-- /.card -->
+
+                <!-- Título do Relatório -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h5>RELATÓRIO DE PARTICINTES POR PROJECTO</h5>
                         </div>
                     </div>
                 </div>
+
+                <!-- Formulário de Pesquisa -->
+                    <form action=" {{ route('relatorios.participanteDN.anoN') }} " method="get">
+                    <section class="content">
+                        <div class="container-fluid">
+                            
+                            @if ($val)
+                                <div class="alert alert-danger alert-dismissible text-center">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h5><i class="icon fas fa-ban"></i> Erro de Intervalo</h5>
+                                </div>
+                            @endif
+
+                            <div class="row">
+                                <!-- Campo Data Inicial -->
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <label for="data" class="form-control">Data Inicial</label>
+                                        <input type="date" min="2020-01-01" max="2030-12-31" class="form-control" 
+                                               value="{{ old('data') ?? $data }}" name="data" required>
+                                    </div>
+                                </div>
+
+                                <!-- Campo Data Final -->
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <label for="data2" class="form-control">Data Final</label>
+                                        <input type="date" min="2020-01-01" max="2030-12-31" class="form-control" 
+                                               value="{{ old('data2') ?? $data2 }}" name="data2" required>
+                                    </div>
+                                </div>
+
+                                <!-- Campo Projeto -->
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <label for="projecto_id" class="form-control">Projecto</label>
+                                        <select class="form-control" name="projecto_id" required>
+                                            <option value="" selected disabled>Selecione projecto</option>
+                                            @foreach ($projectos as $projecto)
+                                                <option value="{{ $projecto->id }}" 
+                                                        {{ isset($selectedProjecto) && $selectedProjecto == $projecto->id ? 'selected' : '' }}>
+                                                    {{ $projecto->acronimo }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Botão de Pesquisa -->
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn bg-lightblue btn-block">
+                                        <i class="fa fa-search"></i> Pesquisar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+
+                <!-- Tabela de Resultados -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <table id="example" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Projecto</th>
+                                            <th>Ano</th>
+                                            <th>Valor Desembolsado</th>
+                                            <th>Valor da visita normal</th>
+                                            <th>Valor da visita nao programada</th>
+                                            <th>Valor da visita variavel</th>
+                                            <th>Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($tabela))
+                                            @foreach ($tabela as $table)
+                                                <tr>
+                                                    <td>{{ $table['acronimo'] }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($table['created_at'])->format('Y') }}</td>
+                                                    <td>{{ number_format($table['desembolso'], 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($table['valor'], 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($table['valor_variavel'], 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($table['valor_esp'], 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($table['saldo'], 2, ',', '.') }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <!-- Caso a tabela esteja vazia, nada será mostrado aqui -->
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumo dos Valores -->
+                <!--
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h5>Total Desembolsado: {{ number_format($totalDesembolsado, 2, ',', '.') }}</h5>
+                            <h5>Total Gasto: {{ number_format($totalGastos, 2, ',', '.') }}</h5>
+                            <h5>Saldo: {{ number_format($saldo, 2, ',', '.') }}</h5>
+                        </div>
+                    </div>
+                </div>
+                -->
+
             </div>
         </div>
     </div>
-    @include('layouts.datatable')
+</div>
+
+@include('layouts.datatable')
 @endsection
