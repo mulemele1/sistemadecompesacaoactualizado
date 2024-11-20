@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Participante por ano')
+@section('title', 'RELATÓRIO DE PARTICINTES POR PROJECTO')
 
 @section('content')
     <div class="row">

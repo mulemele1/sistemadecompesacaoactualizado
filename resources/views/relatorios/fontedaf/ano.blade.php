@@ -1,6 +1,6 @@
 @extends('adminlte::page') 
 
-@section('title', 'Relatorio da DAF por Ano')
+@section('title', 'RELATÓRIO DA DAF POR PROJECTO')
 
 @section('content')
 <div class="row">

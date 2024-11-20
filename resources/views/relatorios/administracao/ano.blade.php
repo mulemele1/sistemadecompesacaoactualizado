@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Secretaria por Ano')
+@section('title', 'RELATÓRIO DA SECRETARIA POR PROJECTO')
 
 @section('content')
 <div class="row">
@@ -104,9 +104,9 @@
                                             <tr style="font-weight: bold; background-color: #f2f2f2;">
                                                 <td>Total</td>
                                                 <td></td>
-                                                <td>{{ number_format($totalDesembolso, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($totalGasto, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($totalSaldo, 2, ',', '.') }}</td>
+                                                <td>{{ number_format($totalDesembolsado, 2, ',', '.') }}</td>
+                                                <td>{{ number_format($totalGastos, 2, ',', '.') }}</td>
+                                                <td>{{ number_format($saldo, 2, ',', '.') }}</td>
                                             </tr>
                                         @else
                                             <tr>
