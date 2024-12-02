@@ -43,21 +43,23 @@ class ParticipanteController extends Controller
         return view('participantes.create', compact('projectos'));
     }
 
+    
+
     public function store(Request $request)
-{
-    // Validação dos dados
-    $validatedData = $request->validate([
-        'codigo' => 'required|unique:participantes,codigo',
-        'projecto_id' => 'required',
-    ], [
-        'codigo.unique' => 'O ID do Participante já existe. Por favor, insira um novo.',
-    ]);
+    {
+        // Validação dos dados
+        $validatedData = $request->validate([
+            'codigo' => 'required|unique:participantes,codigo',
+            'projecto_id' => 'required',
+        ], [
+            'codigo.unique' => 'O ID do Participante já existe. Por favor, insira um novo.',
+        ]);
 
-    // Salvar o participante se passar pela validação
-    Participante::create($validatedData);
+        // Salvar o participante se passar pela validação
+        Participante::create($validatedData);
 
-    return redirect()->route('participantes.list')->with('success', 'Participante adicionado com sucesso!');
-}
+        return redirect()->route('participantes.list')->with('success', 'Participante adicionado com sucesso!');
+    }
 
 
 

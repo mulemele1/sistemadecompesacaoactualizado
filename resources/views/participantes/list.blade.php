@@ -107,15 +107,15 @@
                             </div>
 
                             <div class="card-body">
-                                <div class="button-container" id="exemplo">
-                                    <!-- Novos Botões -->
+                                <!--<div class="button-container" id="exemplo">
+                                    
                                     <button class="btn btn-info btn-custom">Show</button>
                                     <button class="btn btn-info btn-custom">Entries</button>
                                     <button class="btn btn-info btn-custom">Copy</button>
                                     <button class="btn btn-success btn-custom">Excel</button>
                                     <button class="btn btn-warning btn-custom">Importar</button>
                                     <button class="btn btn-primary btn-custom">Exportar</button>
-                                </div>
+                                </div>-->
 
                                 <div class="table-responsive">
                                     <table id="example" class="table table-bordered table-striped">

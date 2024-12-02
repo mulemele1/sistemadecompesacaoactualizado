@@ -320,7 +320,7 @@ return [
                     'can'  => 'is_admin',
                 ], 
                 [
-                    'text' => 'Requisição Recepão',
+                    'text' => 'Requisição Recepção',
                     'icon' => 'fas fa-fw fa-file', // Alterado para ícone de documento
                     'url'  => 'requisicaos/list',
                     'can'  => 'is_user',
