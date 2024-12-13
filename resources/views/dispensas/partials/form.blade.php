@@ -23,7 +23,7 @@
             variavelInput.style.display = 'none';
             especialInput.style.display = 'none';
             valorField.readOnly = false; // Permite edição
-        } 
+        }
         // Se o campo "Valor da visita não programada" estiver selecionado
         else if (document.getElementById('valor_esp').checked) {
             valorInput.style.display = 'none';
@@ -31,14 +31,14 @@
             especialInput.style.display = 'block';
             valorEspField.value = 'Valor automático'; // Substitua pelo valor real
             valorEspField.readOnly = true; // Impede edição
-        } 
+        }
         // Se o campo "Valor variável" estiver selecionado
         else if (document.getElementById('valor_variado').checked) {
             valorInput.style.display = 'none';
             variavelInput.style.display = 'block';
             especialInput.style.display = 'none';
             valorVariavelField.readOnly = false; // Permite edição
-        } 
+        }
         // Se nenhum campo estiver selecionado
         else {
             valorInput.style.display = 'none';
@@ -57,10 +57,10 @@
         };
 
         const valorField = document.getElementById('valor');
-        
+
         if (projectValues[selectedProjectId]) {
             valorField.value = projectValues[selectedProjectId].valor;
-            
+
             // Alerta se não houver saldo
             if (!projectValues[selectedProjectId].saldo) {
                 alert(`O PROJECTO ${selectElement.options[selectElement.selectedIndex].text} não tem Valor para participante.`);
@@ -71,16 +71,26 @@
     }
 
     // Inicializa o formulário com o valor da visita selecionado
-    window.onload = function() {
+    window.onload = function () {
         document.getElementById('valor_visita').checked = true;
         toggleValorFields(); // Chama a função para exibir o campo correto
     }
+
+    document.getElementById('data_visita').addEventListener('change', function () {
+        const inputDate = new Date(this.value);
+        const today = new Date();
+
+        if (inputDate > today) {
+            alert('A data da visita não pode ser no futuro.');
+            this.value = ''; // Reseta o valor
+        }
+    });
 </script>
 
 @csrf
 <div class="card-body">
     @include('requisicaos.partials.validations')
-    
+
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
@@ -96,7 +106,7 @@
                 </select>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <div class="form-group">
                 <label for="recepcao">Recepção</label>
@@ -128,12 +138,29 @@
                 </select>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <div class="form-group">
                 <label for="visita">Visita</label>
-                <input type="text" name="visita" id="visita" value="{{ $dispensa->visita ?? old('visita') }}" class="form-control" placeholder="Escreva a visita">
+                <input type="text" name="visita" id="visita" value="{{ $dispensa->visita ?? old('visita') }}"
+                    class="form-control" placeholder="Escreva a visita">
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="data_visita">Data da visita</label>
+                <input type="date" name="data_visita" id="data_visita"
+                    value="{{ old('data_visita', $dispensa->data_visita ?? '') }}" max="{{ date('Y-m-d') }}"
+                    class="form-control">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="user_name">Usuário</label>
+            <input type="text" class="form-control" id="user_name" readonly
+                value="{{ auth()->check() ? auth()->user()->name : 'Não há usuário logado' }}">
         </div>
     </div>
 
@@ -141,27 +168,30 @@
         <div class="col-md-12">
             <label>Tipo de Valor</label><br>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="tipo_valor" id="valor_visita" value="visita" onchange="toggleValorFields()">
+                <input class="form-check-input" type="radio" name="tipo_valor" id="valor_visita" value="visita"
+                    onchange="toggleValorFields()">
                 <label class="form-check-label" for="valor_visita">Valor da visita</label>
             </div>
-            
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="tipo_valor" id="valor_esp" value="especial" onchange="toggleValorFields()">
+                <input class="form-check-input" type="radio" name="tipo_valor" id="valor_esp" value="especial"
+                    onchange="toggleValorFields()">
                 <label class="form-check-label" for="valor_especial">Valor da visita não programada</label>
             </div>
-
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="tipo_valor" id="valor_variado" value="variado" onchange="toggleValorFields()">
+                <input class="form-check-input" type="radio" name="tipo_valor" id="valor_variado" value="variado"
+                    onchange="toggleValorFields()">
                 <label class="form-check-label" for="valor_variado">Valor variável</label>
             </div>
         </div>
+
     </div>
 
     <div class="row" id="valor_input" style="display:none;">
         <div class="col-md-6">
             <div class="form-group">
                 <label for="valor">Valor</label>
-                <input type="text" name="valor" id="valor" value="{{ $dispensa->valor ?? old('valor') }}" class="form-control" placeholder="Escreva o valor" readonly>
+                <input type="text" name="valor" id="valor" value="{{ $dispensa->valor ?? old('valor') }}"
+                    class="form-control" placeholder="Escreva o valor" readonly>
             </div>
         </div>
     </div>
@@ -170,13 +200,15 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="valor_esp">Valor Especial</label>
-                <input type="text" name="valor_esp" id="valor_esp" class="form-control" placeholder="Escreva o valor da visita não programada">
+                <input type="text" name="valor_esp" id="valor_esp" class="form-control"
+                    placeholder="Escreva o valor da visita não programada">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motivo_esp">Motivo da visita não programada</label>
-                <textarea name="motivo_esp" id="motivo_esp" class="form-control" placeholder="Escreva o motivo da visita não programada"></textarea>
+                <textarea name="motivo_esp" id="motivo_esp" class="form-control"
+                    placeholder="Escreva o motivo da visita não programada"></textarea>
             </div>
         </div>
     </div>
@@ -184,17 +216,22 @@
     <div class="row" id="variavel_input" style="display:none;">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="valor_variavel">Valor da visita não programada</label>
-                <input type="text" name="valor_variavel" id="valor_variavel" value="{{ $dispensa->valor_variavel ?? old('valor_variavel') }}" class="form-control" placeholder="Escreva o valor da visita não programada">
+                <label for="valor_variavel">Valor da visita variável</label>
+                <input type="text" name="valor_variavel" id="valor_variavel"
+                    value="{{ $dispensa->valor_variavel ?? old('valor_variavel') }}" class="form-control"
+                    placeholder="Escreva o valor da visita variável">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motivo">Motivo</label>
-                <textarea name="motivo" id="motivo" class="form-control" placeholder="Escreva o motivo">{{ $dispensa->motivo ?? old('motivo') }}</textarea>
+                <textarea name="motivo" id="motivo" class="form-control"
+                    placeholder="Escreva o motivo">{{ $dispensa->motivo ?? old('motivo') }}</textarea>
             </div>
         </div>
     </div>
+
+    
 </div>
 <!-- /.card-body -->
 

@@ -154,7 +154,7 @@
                                                 <th>Motivo da visita não programada</th>
                                                 <th>Valor Variavel</th>
                                                 <th>Motivo</th>
-                                                <th>Data da despesa</th>
+                                                <th>Data da visita</th>
                                                 <th>Ação</th>
                                             </tr>
                                         </thead>
@@ -164,7 +164,8 @@
                                                     <td>{{ $dispensa->name }}</td>
                                                     <td
                                                         class="{{ isset($dispensa->saldo) && !$dispensa->saldo ? 'text-danger' : '' }}">
-                                                        {{ $dispensa->acronimo }}</td>
+                                                        {{ $dispensa->acronimo }}
+                                                    </td>
                                                     <td>{{ $dispensa->codigo }}</td>
                                                     <td>{{ $dispensa->visita }}</td>
                                                     <td>{{ number_format($dispensa->valor, 2) }}</td>
@@ -172,7 +173,7 @@
                                                     <td>{{ $dispensa->motivo_esp }}</td>
                                                     <td>{{ number_format($dispensa->valor_variavel, 2) }}</td>
                                                     <td>{{ $dispensa->motivo }}</td>
-                                                    <td>{{ $dispensa->created_at }}</td>
+                                                    <td>{{ $dispensa->data_visita }}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <a role="button" class="btn bg-lightblue"

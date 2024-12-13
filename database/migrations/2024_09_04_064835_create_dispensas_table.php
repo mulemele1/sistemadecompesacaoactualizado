@@ -23,7 +23,9 @@ return new class extends Migration
             $table->double('valor', 15, 2)->nullable();
             $table->string('motivo')->nullable();;
             $table->double('valor_esp', 15, 2)->nullable();
-            $table->string('motivo_esp')->nullable();;
+            $table->string('motivo_esp')->nullable();
+            $table->date('data_visita')->nullable();
+            $table->string('user_name')->nullable();
             $table->timestamps();
         });
     }

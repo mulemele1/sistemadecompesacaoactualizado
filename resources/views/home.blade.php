@@ -57,11 +57,12 @@
             </div>
         </div>
 
-        <!-- Imagem à direita -->
+        <!-- Imagem à direita 
         <div class="col-md-6 text-center">
             <img src="{{ asset('storage/criação-de-site-1.png') }}" alt="Design Responsivo" class="img-fluid h-30 w-100"
                 style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 10px;">
         </div>
+        -->
     </div>
 
     <!-- Gráfico de Pizza -->
