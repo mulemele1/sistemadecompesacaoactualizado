@@ -38,18 +38,12 @@ class DispensaController extends Controller
         $participantes = Participante::all(['id', 'codigo']);
         return view('dispensas.create', compact('projectos', 'recepcaos', 'participantes'));
     }
-
-
     public function store(StoreUpdateDispensaRequest $request)
     {
         $data = $request->all();
-        $data['user_name'] = auth()->id(); // Associa o usuário logado
-        Dispensa::create($data);
-
+        $dispensa = Dispensa::create($data);
         return redirect()->route('dispensas.list');
     }
-
-
     public function edit($id)
     {
         //$dispensas = Dispensa::find($id);
@@ -71,21 +65,14 @@ class DispensaController extends Controller
             'dispensa'
         ));
     }
-
     public function update(StoreUpdateDispensaRequest $request, $id)
     {
-        if (!$dispensa = Dispensa::find($id)) {
+        if (!$dispensa = Dispensa::find($id))
             return redirect()->route('dispensas.list');
-        }
-
         $data = $request->all();
-        $data['user_name'] = auth()->id(); // Atualiza com o usuário logado
         $dispensa->update($data);
-
         return redirect()->route('dispensas.list');
     }
-
-
     public function delete($id)
     {
         if (!$dispensa = Dispensa::find($id))

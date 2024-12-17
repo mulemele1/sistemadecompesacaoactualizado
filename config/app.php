@@ -17,9 +17,6 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
-    'access_status' => env('APP_ACCESS_STATUS'),
-
-
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -199,7 +196,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         //Maatwebsite\Excel\ExcelServiceProvider::class,
-        
 
     ],
 

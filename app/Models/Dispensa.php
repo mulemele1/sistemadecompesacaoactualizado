@@ -18,9 +18,7 @@ class Dispensa extends Model
         'motivo',
         'visita',
         'valor_esp',
-        'motivo_esp',
-        'data_visita',
-        'user_name',
+        'motivo_esp'
     ];
     public function recepcao(){
         return $this->belongsTo(Recepcao::class);
@@ -30,8 +28,5 @@ class Dispensa extends Model
     }
     public function participante(){
         return $this->belongsTo(Participante::class);
-    }
-    public function user(){
-        return $this->belongsTo(User::class);
     }
 }

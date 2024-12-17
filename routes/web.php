@@ -188,17 +188,7 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
-Auth::routes();
-
-Route::get('/', function () {
-    if (config('app.access_status') === 'enabled') {
-        // Permitir acesso completo
-        return view('welcome');
-    }
-    abort(404);
-});
-
-Route::get('users/export/', [UserController::class, 'export']);
+Auth::routes(); 
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'list'])->name('home')->middleware('auth');
 Route::get('/home', [DashboardController::class, 'recuperar'])->name('recuperar')->middleware('auth');
