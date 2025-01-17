@@ -18,7 +18,8 @@ class Dispensa extends Model
         'motivo',
         'visita',
         'valor_esp',
-        'motivo_esp'
+        'motivo_esp',
+        'data_visita',
     ];
     public function recepcao(){
         return $this->belongsTo(Recepcao::class);
